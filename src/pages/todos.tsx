@@ -20,14 +20,14 @@ const Todo: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="flex min-h-screen flex-col items-center justify-center">
-        <h1>Todo</h1>
-        <div>
+        <h1 className="text-3xl">Todo</h1>
+        <div className="flex w-4/5 flex-col gap-4">
           {todos.data?.map((todo) => (
-            <div key={todo.id} className="pt-10">
+            <div key={todo.id} className="flex w-full justify-between">
               <p>{todo.title}</p>
               <button
                 onClick={() => deleteTodo.mutate({ id: todo.id })}
-                className="bg-cyan-300"
+                className="w-20 rounded-md bg-red-500 text-white"
               >
                 Delete
               </button>

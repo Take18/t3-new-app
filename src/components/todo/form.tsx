@@ -23,9 +23,10 @@ export const AddTodoForm = () => {
   return (
     <>
       <form
-        className="mt-4 flex w-4/5 flex-col gap-4"
+        className="mt-16 flex w-4/5 flex-col gap-4"
         onSubmit={handleSubmit(submitForm)}
       >
+        <h2 className="mx-auto text-2xl">Create Todo</h2>
         <input
           className="w-full border border-black"
           placeholder="Input Title"
