@@ -1,17 +1,42 @@
 import { type NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
+import { useRouter } from "next/router";
+import { useCallback, useEffect, useState } from "react";
 import { AddTodoForm } from "~/components/todo/form";
 import { api } from "~/utils/api";
 
 const Todo: NextPage = () => {
+  type Todo = {
+    id: number;
+    title: string;
+    description: string;
+    createdAt: Date;
+    updatedAt: Date;
+    deletedAt: Date | null;
+  };
+
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!router.isReady) return;
+    const { q } = router.query;
+    setSearchQuery((typeof q === "object" ? q[0] : q) ?? "");
+  }, [router]);
+
+  const [searchQuery, setSearchQuery] = useState("");
+
   const utils = api.useContext();
-  const todos = api.todo.getAll.useQuery();
+  const todos = api.todo.getAll.useQuery({ q: searchQuery });
   const deleteTodo = api.todo.delete.useMutation({
     onSettled: () => {
       utils.todo.getAll.invalidate();
     },
   });
+
+  const isUpdated = useCallback((todo: Todo) => {
+    return todo.createdAt.toISOString() !== todo.updatedAt.toISOString();
+  }, []);
 
   return (
     <>
@@ -22,10 +47,25 @@ const Todo: NextPage = () => {
       </Head>
       <main className="flex min-h-screen flex-col items-center justify-center">
         <h1 className="text-3xl">Todo</h1>
+        <input
+          type="text"
+          className="my-4 border border-black"
+          placeholder="SEARCH"
+          value={searchQuery}
+          onInput={(e) => setSearchQuery(e.currentTarget.value)}
+        />
         <div className="flex w-4/5 flex-col gap-4">
           {todos.data?.map((todo) => (
-            <div key={todo.id} className="flex w-full justify-between">
-              <p>{todo.title}</p>
+            <div
+              key={todo.id}
+              className="flex w-full items-center justify-between"
+            >
+              <p>
+                {todo.title}
+                {isUpdated(todo) && (
+                  <span className="text-sm text-gray-400">(Edited)</span>
+                )}
+              </p>
               <div className="flex w-44 justify-between">
                 <button
                   onClick={() => deleteTodo.mutate({ id: todo.id })}

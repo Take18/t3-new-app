@@ -22,13 +22,31 @@ export const todoRouter = createTRPCRouter({
         },
       });
     }),
-  getAll: publicProcedure.query(({ ctx }) => {
-    return ctx.prisma.todo.findMany({
-      where: {
-        deletedAt: null,
-      },
-    });
-  }),
+  getAll: publicProcedure
+    .input(z.object({ q: z.string().optional() }))
+    .query(({ input, ctx }) => {
+      return ctx.prisma.todo.findMany({
+        where: {
+          deletedAt: null,
+          ...(input
+            ? {
+                OR: [
+                  {
+                    title: {
+                      contains: input.q,
+                    },
+                  },
+                  {
+                    description: {
+                      contains: input.q,
+                    },
+                  },
+                ],
+              }
+            : {}),
+        },
+      });
+    }),
 
   get: publicProcedure
     .input(z.object({ id: z.number().optional() }))
