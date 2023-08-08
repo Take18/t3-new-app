@@ -1,5 +1,6 @@
 import { type NextPage } from "next";
 import Head from "next/head";
+import Link from "next/link";
 import { AddTodoForm } from "~/components/todo/form";
 import { api } from "~/utils/api";
 
@@ -25,12 +26,20 @@ const Todo: NextPage = () => {
           {todos.data?.map((todo) => (
             <div key={todo.id} className="flex w-full justify-between">
               <p>{todo.title}</p>
-              <button
-                onClick={() => deleteTodo.mutate({ id: todo.id })}
-                className="w-20 rounded-md bg-red-500 text-white"
-              >
-                Delete
-              </button>
+              <div className="flex w-44 justify-between">
+                <button
+                  onClick={() => deleteTodo.mutate({ id: todo.id })}
+                  className="w-20 rounded-md bg-red-500 text-white"
+                >
+                  Delete
+                </button>
+                <Link
+                  href={`/todos/${todo.id}`}
+                  className="w-20 rounded-md bg-green-200 text-center text-black"
+                >
+                  Edit
+                </Link>
+              </div>
             </div>
           ))}
         </div>

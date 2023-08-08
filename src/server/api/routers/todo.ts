@@ -30,6 +30,14 @@ export const todoRouter = createTRPCRouter({
     });
   }),
 
+  get: publicProcedure
+    .input(z.object({ id: z.number().optional() }))
+    .query(({ input, ctx }) => {
+      return ctx.prisma.todo.findFirst({
+        where: { id: input.id, deletedAt: null },
+      });
+    }),
+
   create: protectedProcedure
     .input(
       z.object({
@@ -40,6 +48,25 @@ export const todoRouter = createTRPCRouter({
     .mutation(({ input, ctx }) => {
       return ctx.prisma.todo.create({
         data: input,
+      });
+    }),
+
+  update: protectedProcedure
+    .input(
+      z.object({
+        id: z.number(),
+        data: z.object({
+          title: z.string(),
+          description: z.string(),
+        }),
+      })
+    )
+    .mutation(({ input, ctx }) => {
+      return ctx.prisma.todo.update({
+        where: {
+          id: input.id,
+        },
+        data: input.data,
       });
     }),
 });
