@@ -9,11 +9,20 @@ export const todoRouter = createTRPCRouter({
       })
     )
     .mutation(({ input, ctx }) => {
-      return ctx.prisma.todo.delete({
-        where: { id: input.id },
+      return ctx.prisma.todo.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          deletedAt: new Date(),
+        },
       });
     }),
   getAll: publicProcedure.query(({ ctx }) => {
-    return ctx.prisma.todo.findMany();
+    return ctx.prisma.todo.findMany({
+      where: {
+        deletedAt: null,
+      },
+    });
   }),
 });

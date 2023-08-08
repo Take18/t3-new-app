@@ -66,9 +66,10 @@ model VerificationToken {
 }
 
 model Todo {
-    id          Int      @id @default(autoincrement())
+    id          Int       @id @default(autoincrement())
     title       String
     description String
-    createdAt   DateTime @default(now())
-    updatedAt   DateTime @updatedAt
+    createdAt   DateTime  @default(now())
+    updatedAt   DateTime  @updatedAt
+    deletedAt   DateTime?
 }
