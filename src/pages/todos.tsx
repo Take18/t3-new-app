@@ -1,5 +1,6 @@
 import { type NextPage } from "next";
 import Head from "next/head";
+import { AddTodoForm } from "~/components/todo/form";
 import { api } from "~/utils/api";
 
 const Todo: NextPage = () => {
@@ -33,6 +34,7 @@ const Todo: NextPage = () => {
             </div>
           ))}
         </div>
+        <AddTodoForm />
       </main>
     </>
   );
